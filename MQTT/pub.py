@@ -17,6 +17,7 @@ port = 1883  # Port default untuk MQTT
 # Inisialisasi topik dan pesan suhu
 topic = "sister/temp"
 suhu = 28  # Suhu tetap 28'C
+lokasi = "Jakarta"
 
 # Callback untuk koneksi
 def on_connect(client, userdata, flags, rc, properties=None):
@@ -41,11 +42,13 @@ except Exception as e:
 # Loop untuk mengirim pesan setiap detik
 try:
     while True:
-        # Mempublikasikan suhu ke topik
-        message = f"Suhu: {suhu}°C"
+        # Mempublikasikan payload yang berisi suhu dan lokasi sebagai JSON
+        payload = {"suhu": suhu, "lokasi": lokasi}
+        import json
+        message = json.dumps(payload)
         client.publish(topic, message)
         print(f"Published: {message}")
-        
+
         # Tunggu 1 detik sebelum mengirim lagi
         time.sleep(1)
 
