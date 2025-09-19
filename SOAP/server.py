@@ -6,7 +6,7 @@ Created on Sun Sep  8 16:49:40 2024
 @author: widhi
 """
 
-from spyne import Application, rpc, ServiceBase, Integer
+from spyne import Application, rpc, ServiceBase, Integer, Double
 from spyne.protocol.soap import Soap11
 from spyne.server.wsgi import WsgiApplication
 
@@ -15,6 +15,38 @@ class CalculatorService(ServiceBase):
     @rpc(Integer, Integer, _returns=Integer)
     def add(ctx, a, b):
         return a + b
+
+    @rpc(Integer, Integer, _returns=Integer)
+    def sub(ctx, a, b):
+        return a - b
+
+    @rpc(Integer, Integer, _returns=Integer)
+    def mul(ctx, a, b):
+        return a * b
+
+    @rpc(Integer, Integer, _returns=Integer)
+    def div(ctx, a, b):
+        # simple integer division; return 0 on division by zero
+        try:
+            return a // b
+        except ZeroDivisionError:
+            return 0
+
+    @rpc(Integer, Integer, _returns=Integer)
+    def mod(ctx, a, b):
+        try:
+            return a % b
+        except ZeroDivisionError:
+            return 0
+
+    @rpc(Integer, Integer, _returns=Double)
+    def pow(ctx, a, b):
+        # exponentiation; return float to avoid overflow issues
+        return float(a) ** float(b)
+
+    @rpc(Integer, Integer, _returns=Double)
+    def avg(ctx, a, b):
+        return (float(a) + float(b)) / 2.0
 
 # Membuat aplikasi SOAP dengan protokol Soap11
 app = Application([CalculatorService],
