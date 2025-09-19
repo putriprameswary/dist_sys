@@ -27,7 +27,15 @@ def on_connect(client, userdata, flags, rc, properties=None):
 
 # Callback untuk pesan yang diterima
 def on_message(client, userdata, message, properties=None):
-    print(f"Received message: {message.payload.decode()} (Topic: {message.topic})")
+    payload = message.payload.decode()
+    try:
+        import json
+        data = json.loads(payload)
+        suhu = data.get('suhu')
+        lokasi = data.get('lokasi')
+        print(f"Diterima: Suhu = {suhu}°C, Lokasi = {lokasi} (Topic: {message.topic})")
+    except Exception:
+        print(f"Received message: {payload} (Topic: {message.topic})")
 
 # Inisialisasi klien MQTT dengan API versi terbaru
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
