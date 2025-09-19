@@ -9,8 +9,9 @@ Created on Sun Sep  8 17:05:25 2024
 import requests
 import argparse
 import sys
+import os
 
-BASE = 'http://rest-server:5151'
+BASE = os.environ.get('REST_BASE', 'http://rest-server:5151')
 
 def call(endpoint, a, b):
     try:
@@ -23,9 +24,10 @@ def call(endpoint, a, b):
     except Exception as e:
         print(f"{endpoint} exception: {e}")
 
+
 def main():
     parser = argparse.ArgumentParser(description="Simple REST client for add/mul endpoints")
-    parser.add_argument('--op', choices=['add','mul','both'], default='both', help='Operation to invoke')
+    parser.add_argument('--op', choices=['add','mul','both','sub','div'], default='both', help='Operation to invoke')
     parser.add_argument('-a', type=int, default=10)
     parser.add_argument('-b', type=int, default=5)
     args = parser.parse_args()
@@ -33,6 +35,11 @@ def main():
         call('add', args.a, args.b)
     if args.op in ('mul','both'):
         call('mul', args.a, args.b)
+    if args.op in ('sub','both'):
+        call('sub', args.a, args.b)
+    if args.op in ('div','both'):
+        call('div', args.a, args.b)
+
 
 if __name__ == '__main__':
     sys.exit(main())
